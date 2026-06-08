@@ -1,106 +1,406 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CS Quiz Pro</title>
-<style>
-:root{
---bg:#0f172a;--card:#111827;--accent:#3b82f6;--text:#f8fafc;--muted:#94a3b8;
---ok:#22c55e;--bad:#ef4444;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:24px}
-.wrap{width:min(900px,100%)}
-.card{background:rgba(17,24,39,.95);backdrop-filter:blur(10px);border-radius:24px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-h1{margin:0 0 8px}
-.top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.bar{height:10px;background:#334155;border-radius:999px;overflow:hidden;margin:16px 0}
-.fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:0%;transition:.4s}
-.q{font-size:1.35rem;font-weight:700;margin:20px 0}
-.grid{display:grid;gap:12px}
-button.opt{padding:16px;border:none;border-radius:14px;background:#1f2937;color:white;text-align:left;cursor:pointer;font-size:1rem;transition:.2s}
-button.opt:hover{transform:translateY(-2px)}
-.correct{background:var(--ok)!important}
-.wrong{background:var(--bad)!important}
-#feedback{margin-top:16px;color:var(--muted)}
-#next,#restart{margin-top:18px;padding:14px 22px;border:none;border-radius:12px;background:var(--accent);color:white;cursor:pointer}
-.badges{display:flex;gap:12px;flex-wrap:wrap}
-.badge{background:#1e293b;padding:10px 14px;border-radius:12px}
-.hidden{display:none}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS Quiz Pro - Professional Assessment Tool</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #131a26;
+      --border: #222d3f;
+      --border-focus: #3b82f6;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.15);
+      --error: #ef4444;
+      --error-bg: rgba(239, 68, 68, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .wrap { width: 100%; max-width: 680px; }
+
+    .card {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Top Stats Panel */
+    .top-panel { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 16px; }
+    h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+    .progress-text { font-size: 13px; color: var(--muted); font-weight: 500; margin-top: 4px; }
+    
+    .stats-group { display: flex; gap: 8px; }
+    .stat-badge {
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .stat-badge span { color: var(--text); }
+
+    /* Performance Progress Metrics */
+    .bar-container { height: 6px; background-color: var(--bg); border-radius: 999px; overflow: hidden; margin-bottom: 28px; }
+    .bar-fill { height: 100%; background-color: var(--accent); width: 0%; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    /* Question Presenter */
+    .category-tag {
+      display: inline-block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .question-text { font-size: 1.25rem; font-weight: 600; line-height: 1.4; margin-bottom: 24px; }
+    
+    .options-grid { display: flex; flex-direction: column; gap: 10px; }
+    
+    button.opt-btn {
+      width: 100%;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background-color: var(--bg);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.15s ease;
+    }
+    button.opt-btn:hover:not(:disabled) { border-color: var(--border-focus); background-color: rgba(59, 130, 246, 0.04); }
+    button.opt-btn:disabled { cursor: not-allowed; }
+    
+    .key-hint { font-size: 11px; color: var(--muted); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; background: var(--card); }
+
+    /* Validation Modifier Utilities */
+    button.opt-btn.correct { background-color: var(--success-bg); border-color: var(--success); color: var(--text); font-weight: 600; }
+    button.opt-btn.wrong { background-color: var(--error-bg); border-color: var(--error); color: var(--text); }
+
+    .feedback-panel {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg);
+      border-left: 3px solid var(--accent);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .feedback-panel strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+    /* Operational Action Controls */
+    .actions-row { display: flex; justify-content: flex-end; margin-top: 24px; }
+    .btn-action {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background-color: var(--accent);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+    .btn-action:hover { background-color: var(--accent-hover); }
+
+    /* Results Dashboard View */
+    .score-summary { text-align: center; padding: 16px 0 32px 0; }
+    .score-metric { font-size: 48px; font-weight: 800; tracking: -0.03em; margin: 8px 0; color: var(--accent); }
+    .score-msg { font-size: 15px; color: var(--muted); }
+
+    .review-section { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 24px; }
+    .review-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 16px; }
+    .review-feed { display: flex; flex-direction: column; gap: 12px; max-height: 280px; overflow-y: auto; padding-right: 4px; }
+    
+    .review-item { padding: 14px; border-radius: var(--radius-md); background-color: var(--bg); border: 1px solid var(--border); font-size: 13px; }
+    .review-q { font-weight: 600; margin-bottom: 4px; color: var(--text); }
+    .review-status { font-weight: 700; font-size: 11px; text-transform: uppercase; margin-bottom: 6px; }
+    .review-status.pass { color: var(--success); }
+    .review-status.fail { color: var(--error); }
+    .review-exp { color: var(--muted); }
+
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body>
+
 <div class="wrap">
-<div class="card">
-<div class="top">
-<div><h1>🚀 CS Quiz Pro</h1><div id="progressText"></div></div>
-<div class="badges">
-<div class="badge">🏆 Score: <span id="scoreLive">0</span></div>
-<div class="badge">⚡ Streak: <span id="streak">0</span></div>
+  <div class="card">
+    
+    <div class="top-panel">
+      <div>
+        <h1>CS Quiz Professional</h1>
+        <div id="progressText" class="progress-text"></div>
+      </div>
+      <div class="stats-group">
+        <div class="stat-badge">Score: <span id="scoreLive">0</span></div>
+        <div class="stat-badge">Streak: <span id="streak">0</span></div>
+      </div>
+    </div>
+
+    <div class="bar-container"><div id="fill" class="bar-fill"></div></div>
+
+    <div id="quiz-viewport">
+      <div id="category" class="category-tag"></div>
+      <div id="question" class="question-text"></div>
+      <div id="options" class="options-grid"></div>
+      <div id="feedback" class="feedback-panel hidden"></div>
+      
+      <div class="actions-row">
+        <button id="next" class="btn-action hidden">Continue</button>
+      </div>
+    </div>
+
+    <div id="results-viewport" class="hidden">
+      <div class="score-summary">
+        <h2>Assessment Complete</h2>
+        <div id="final-score" class="score-metric">0/0</div>
+        <p id="final-msg" class="score-msg"></p>
+      </div>
+
+      <div class="review-section">
+        <div class="review-title">Performance Log Breakdown</div>
+        <div id="review-feed" class="review-feed"></div>
+      </div>
+
+      <div class="actions-row" style="margin-top: 32px;">
+        <button id="restart" class="btn-action" style="width: 100%;">Initialize New Session</button>
+      </div>
+    </div>
+
+  </div>
 </div>
-</div>
-<div class="bar"><div id="fill" class="fill"></div></div>
-<div id="quiz">
-<div id="question" class="q"></div>
-<div id="options" class="grid"></div>
-<div id="feedback"></div>
-<button id="next" class="hidden">Next</button>
-</div>
-<div id="results" class="hidden">
-<h2>Quiz Complete!</h2>
-<h1 id="final"></h1>
-<p id="msg"></p>
-<button id="restart">Play Again</button>
-</div>
-</div>
-</div>
+
 <script>
-const questions=[
-{q:"Which language runs natively in browsers?",o:["Java","Python","JavaScript","C++"],a:2,e:"JavaScript powers browser interactivity."},
-{q:"What does Git commit do?",o:["Upload","Save snapshot","Pull","Branch"],a:1,e:"It saves a local snapshot."},
-{q:"What is OOP?",o:["Protocol","Object-Oriented Programming","Process","Pattern"],a:1,e:"Programming with objects and classes."},
-{q:"localStorage is used to...",o:["Server storage","Encrypt","Store locally","Load CSS"],a:2,e:"Persistent browser storage."},
-{q:"typeof 42 returns?",o:["integer","number","int","float"],a:1,e:"All JS numbers are type number."}
-];
-let current=0,score=0,streak=0,answered=false;
-function render(){
-const q=questions[current];
-progressText.textContent=`Question ${current+1}/${questions.length}`;
-fill.style.width=((current/questions.length)*100)+"%";
-question.textContent=q.q;
-options.innerHTML='';feedback.textContent='';next.classList.add('hidden');answered=false;
-q.o.forEach((t,i)=>{
-const b=document.createElement('button');
-b.className='opt';b.textContent=t;
-b.onclick=()=>answer(i,b);
-options.appendChild(b);
-});
-}
-function answer(i,b){
-if(answered)return; answered=true;
-const q=questions[current];
-[...options.children].forEach(x=>x.disabled=true);
-if(i===q.a){score++;streak++;b.classList.add('correct');}
-else{streak=0;b.classList.add('wrong');options.children[q.a].classList.add('correct');}
-scoreLive.textContent=score; document.getElementById('streak').textContent=streak;
-feedback.textContent=q.e;
-next.classList.remove('hidden');
-}
-next.onclick=()=>{
-current++;
-if(current<questions.length) render();
-else finish();
-};
-function finish(){
-quiz.classList.add('hidden');results.classList.remove('hidden');
-const pct=Math.round(score/questions.length*100);
-final.textContent=`${score}/${questions.length} (${pct}%)`;
-msg.textContent=pct>=80?"Excellent!":pct>=60?"Good job!":"Keep practicing!";
-fill.style.width='100%';
-}
-restart.onclick=()=>location.reload();
-render();
+  // Immutable Core Knowledge Bank Schema Document
+  const MASTER_QUESTIONS = [
+    { cat: "Web Architecture", q: "Which programming language runs natively inside production web browsers?", o: ["Java", "Python", "JavaScript", "C++"], a: "JavaScript", e: "JavaScript executes inside browser engines natively via modern ECMAScript standard profiles." },
+    { cat: "Version Control", q: "What is the discrete structural objective of a Git commit action?", o: ["Upload remote branches", "Save a localized state snapshot", "Pull downstream changes", "Isolate logical code branches"], a: "Save a localized state snapshot", e: "Commits save an isolated snapshot tracking your relative modifications directly inside the local .git directory directory history tree." },
+    { cat: "Software Design", q: "What engineering paradigm does the acronym OOP represent?", o: ["Ordered Operations Protocol", "Object-Oriented Programming", "Optimal Process Architecture", "Object Pattern Integration"], a: "Object-Oriented Programming", e: "Object-Oriented Programming organizes system code frameworks linearly around data structures called objects rather than functional logic blocks." },
+    { cat: "Web Storage API", q: "What is the primary technical use case for the browser localStorage object layer?", o: ["Mirror background server updates", "Asymmetric string cryptography", "Persistent client-side data cache", "Compile alternative style assets"], a: "Persistent client-side data cache", e: "The localStorage mechanism maintains high-capacity key-value string storage models locally across distinct active browser runtimes without implicit expiration dates." },
+    { cat: "JavaScript Runtime", q: "What primitive type evaluation evaluation occurs when processing: typeof 42?", o: ["integer", "number", "int", "float"], a: "number", e: "JavaScript processes all baseline numerical evaluations inside a unified double-precision 64-bit binary format (IEEE 754 float types) mapped under 'number'." }
+  ];
+
+  // Active Variable State Configurations
+  let runtimeQuestions = [];
+  let currentIdx = 0;
+  let score = 0;
+  let streak = 0;
+  let isAnswered = false;
+  let userSessionLogs = [];
+
+  // Fisher-Yates array shuffling machine
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[arr[j]]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Prepares questions and choices dynamically per session
+  function initQuizSession() {
+    currentIdx = 0;
+    score = 0;
+    streak = 0;
+    userSessionLogs = [];
+    isAnswered = false;
+
+    // Deep clone master list to preserve the original schema integrity
+    runtimeQuestions = MASTER_QUESTIONS.map(item => {
+      const optionsCopy = [...item.o];
+      shuffleArray(optionsCopy);
+      return {
+        cat: item.cat,
+        q: item.q,
+        o: optionsCopy,
+        a: item.a, // The raw text answer string to identify the match
+        e: item.e
+      };
+    });
+
+    shuffleArray(runtimeQuestions);
+    
+    // UI Reset
+    scoreLive.textContent = score;
+    document.getElementById('streak').textContent = streak;
+    resultsViewport.classList.add('hidden');
+    quizViewport.classList.remove('hidden');
+    
+    renderActiveQuestion();
+  }
+
+  function renderActiveQuestion() {
+    isAnswered = false;
+    const item = runtimeQuestions[currentIdx];
+
+    progressText.textContent = `Question ${currentIdx + 1} of ${runtimeQuestions.length}`;
+    fill.style.width = ((currentIdx / runtimeQuestions.length) * 100) + "%";
+    
+    document.getElementById('category').textContent = item.cat;
+    document.getElementById('question').textContent = item.q;
+    
+    feedback.classList.add('hidden');
+    feedback.innerHTML = '';
+    next.classList.add('hidden');
+
+    options.innerHTML = '';
+    item.o.forEach((text, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      
+      const textSpan = document.createElement('span');
+      textSpan.textContent = text;
+      btn.appendChild(textSpan);
+
+      const hintSpan = document.createElement('span');
+      hintSpan.className = 'key-hint';
+      hintSpan.textContent = index + 1;
+      btn.appendChild(hintSpan);
+
+      btn.onclick = () => evaluateChoice(text, btn);
+      options.appendChild(btn);
+    });
+  }
+
+  function evaluateChoice(selectedText, selectedButton) {
+    if (isAnswered) return;
+    isAnswered = true;
+
+    const item = runtimeQuestions[currentIdx];
+    const isCorrect = (selectedText === item.a);
+
+    // Lock option interactions immediately
+    Array.from(options.children).forEach(b => b.disabled = true);
+
+    if (isCorrect) {
+      score++;
+      streak++;
+      selectedButton.classList.add('correct');
+    } else {
+      streak = 0;
+      selectedButton.classList.add('wrong');
+      // Locate correct element index and apply highlighting
+      Array.from(options.children).forEach(b => {
+        if (b.firstElementChild.textContent === item.a) {
+          b.classList.add('correct');
+        }
+      });
+    }
+
+    userSessionLogs.push({
+      q: item.q,
+      passed: isCorrect,
+      exp: item.e
+    });
+
+    scoreLive.textContent = score;
+    document.getElementById('streak').textContent = streak;
+
+    // Reveal Feedback Explanations
+    feedback.innerHTML = `<strong>${isCorrect ? 'Correct Analysis' : 'Incorrect Analysis'}</strong> ${item.e}`;
+    feedback.classList.remove('hidden');
+    next.classList.remove('hidden');
+    next.focus();
+  }
+
+  function advanceWorkflow() {
+    currentIdx++;
+    if (currentIdx < runtimeQuestions.length) {
+      renderActiveQuestion();
+    } else {
+      displayEvaluationSummary();
+    }
+  }
+
+  function displayEvaluationSummary() {
+    quizViewport.classList.add('hidden');
+    resultsViewport.classList.remove('hidden');
+    fill.style.width = '100%';
+    progressText.textContent = "Evaluation Terminated";
+
+    const percentage = Math.round((score / runtimeQuestions.length) * 100);
+    document.getElementById('final-score').textContent = `${score} / ${runtimeQuestions.length} (${percentage}%)`;
+    
+    let classification = "Review material thoroughly and retry.";
+    if (percentage >= 90) classification = "Demonstrated architectural mastery.";
+    else if (percentage >= 70) classification = "Solid engineering foundational understanding.";
+    document.getElementById('final-msg').textContent = classification;
+
+    // Render detailed code review breakdown feed
+    const feed = document.getElementById('review-feed');
+    feed.innerHTML = '';
+    userSessionLogs.forEach(log => {
+      const block = document.createElement('div');
+      block.className = 'review-item';
+      block.innerHTML = `
+        <div class="review-status ${log.passed ? 'pass' : 'fail'}">${log.passed ? 'Passed' : 'Failed'}</div>
+        <div class="review-q">${escapeHTML(log.q)}</div>
+        <div class="review-exp">${escapeHTML(log.exp)}</div>
+      `;
+      feed.appendChild(block);
+    });
+  }
+
+  function escapeHTML(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // Key Down Navigation Middleware Event Hooks
+  window.addEventListener('keydown', e => {
+    // Number Hotkeys 1-4 selection map
+    if (!isAnswered && quizViewport.classList.contains('hidden') === false) {
+      if (['1', '2', '3', '4'].includes(e.key)) {
+        const index = parseInt(e.key) - 1;
+        const targetButton = options.children[index];
+        if (targetButton) {
+          targetButton.click();
+        }
+      }
+    } else if (isAnswered && !next.classList.contains('hidden')) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        advanceWorkflow();
+      }
+    }
+  });
+
+  next.onclick = advanceWorkflow;
+  restart.onclick = initQuizSession;
+
+  // Initialize operational pipeline on structural content load
+  initQuizSession();
 </script>
+
 </body>
 </html>
