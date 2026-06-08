@@ -211,6 +211,20 @@
     { cat: "JavaScript Runtime", q: "What primitive type evaluation evaluation occurs when processing: typeof 42?", o: ["integer", "number", "int", "float"], a: "number", e: "JavaScript processes all baseline numerical evaluations inside a unified double-precision 64-bit binary format (IEEE 754 float types) mapped under 'number'." }
   ];
 
+  // Explicit DOM Element Selections
+  const progressText = document.getElementById('progressText');
+  const scoreLive = document.getElementById('scoreLive');
+  const streakText = document.getElementById('streak');
+  const fill = document.getElementById('fill');
+  const quizViewport = document.getElementById('quiz-viewport');
+  const resultsViewport = document.getElementById('results-viewport');
+  const category = document.getElementById('category');
+  const question = document.getElementById('question');
+  const options = document.getElementById('options');
+  const feedback = document.getElementById('feedback');
+  const next = document.getElementById('next');
+  const restart = document.getElementById('restart');
+
   // Active Variable State Configurations
   let runtimeQuestions = [];
   let currentIdx = 0;
@@ -223,7 +237,7 @@
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[arr[j]]] = [arr[j], arr[i]];
+      [arr[i], arr[j]] = [arr[j], arr[i]]; // Fixed tracking evaluation bug here
     }
     return arr;
   }
@@ -244,7 +258,7 @@
         cat: item.cat,
         q: item.q,
         o: optionsCopy,
-        a: item.a, // The raw text answer string to identify the match
+        a: item.a, 
         e: item.e
       };
     });
@@ -253,7 +267,7 @@
     
     // UI Reset
     scoreLive.textContent = score;
-    document.getElementById('streak').textContent = streak;
+    streakText.textContent = streak;
     resultsViewport.classList.add('hidden');
     quizViewport.classList.remove('hidden');
     
@@ -267,8 +281,8 @@
     progressText.textContent = `Question ${currentIdx + 1} of ${runtimeQuestions.length}`;
     fill.style.width = ((currentIdx / runtimeQuestions.length) * 100) + "%";
     
-    document.getElementById('category').textContent = item.cat;
-    document.getElementById('question').textContent = item.q;
+    category.textContent = item.cat;
+    question.textContent = item.q;
     
     feedback.classList.add('hidden');
     feedback.innerHTML = '';
@@ -325,7 +339,7 @@
     });
 
     scoreLive.textContent = score;
-    document.getElementById('streak').textContent = streak;
+    streakText.textContent = streak;
 
     // Reveal Feedback Explanations
     feedback.innerHTML = `<strong>${isCorrect ? 'Correct Analysis' : 'Incorrect Analysis'}</strong> ${item.e}`;
