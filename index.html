@@ -1,347 +1,106 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Quiz App</title>
-  <style>
-    :root {
-      --bg: #f5f5f3;
-      --surface: #ffffff;
-      --border: rgba(0,0,0,0.1);
-      --border-hover: rgba(0,0,0,0.25);
-      --text: #1a1a1a;
-      --muted: #6b6b6b;
-      --success-bg: #EAF3DE;
-      --success-border: #3B6D11;
-      --success-text: #27500A;
-      --danger-bg: #FCEBEB;
-      --danger-border: #A32D2D;
-      --danger-text: #791F1F;
-      --radius-md: 8px;
-      --radius-lg: 12px;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
-
-    .quiz-wrap { width: 100%; max-width: 560px; }
-
-    .header { margin-bottom: 1.5rem; }
-    .header h1 { font-size: 20px; font-weight: 500; }
-    .header p { font-size: 13px; color: var(--muted); margin-top: 4px; }
-
-    .progress-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .progress-bar {
-      flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      margin-right: 12px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: var(--text);
-      border-radius: 2px;
-      transition: width 0.4s;
-    }
-    .progress-text { font-size: 12px; color: var(--muted); white-space: nowrap; }
-
-    .question-card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .question-text { font-size: 16px; font-weight: 500; line-height: 1.5; }
-
-    .options { display: flex; flex-direction: column; gap: 8px; }
-
-    .option-btn {
-      background: var(--surface);
-      border: 0.5px solid var(--border-hover);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      font-size: 14px;
-      color: var(--text);
-      cursor: pointer;
-      text-align: left;
-      transition: background 0.15s, border-color 0.15s;
-      font-family: inherit;
-    }
-    .option-btn:hover:not(:disabled) {
-      background: var(--bg);
-      border-color: var(--text);
-    }
-    .option-btn.correct {
-      background: var(--success-bg);
-      border-color: var(--success-border);
-      color: var(--success-text);
-    }
-    .option-btn.wrong {
-      background: var(--danger-bg);
-      border-color: var(--danger-border);
-      color: var(--danger-text);
-    }
-    .option-btn:disabled { cursor: default; }
-
-    .feedback {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 10px;
-      min-height: 20px;
-      padding: 0 2px;
-      line-height: 1.6;
-    }
-
-    .next-btn {
-      margin-top: 1rem;
-      width: 100%;
-      padding: 12px;
-      font-size: 14px;
-      font-weight: 500;
-      border-radius: var(--radius-md);
-      background: var(--text);
-      color: #ffffff;
-      border: none;
-      cursor: pointer;
-      display: none;
-      font-family: inherit;
-      transition: opacity 0.2s;
-    }
-    .next-btn:hover { opacity: 0.85; }
-
-    .score-card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      text-align: center;
-    }
-    .score-big { font-size: 52px; font-weight: 500; line-height: 1; margin-bottom: 8px; }
-    .score-label { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
-    .score-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 1.5rem;
-    }
-    .score-stat {
-      background: var(--bg);
-      border-radius: var(--radius-md);
-      padding: 10px;
-    }
-    .score-stat-val { font-size: 22px; font-weight: 500; }
-    .score-stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-    .restart-btn {
-      padding: 10px 28px;
-      font-size: 14px;
-      border-radius: var(--radius-md);
-      background: transparent;
-      border: 0.5px solid var(--border-hover);
-      color: var(--text);
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s;
-    }
-    .restart-btn:hover { background: var(--bg); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS Quiz Pro</title>
+<style>
+:root{
+--bg:#0f172a;--card:#111827;--accent:#3b82f6;--text:#f8fafc;--muted:#94a3b8;
+--ok:#22c55e;--bad:#ef4444;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:24px}
+.wrap{width:min(900px,100%)}
+.card{background:rgba(17,24,39,.95);backdrop-filter:blur(10px);border-radius:24px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+h1{margin:0 0 8px}
+.top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.bar{height:10px;background:#334155;border-radius:999px;overflow:hidden;margin:16px 0}
+.fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:0%;transition:.4s}
+.q{font-size:1.35rem;font-weight:700;margin:20px 0}
+.grid{display:grid;gap:12px}
+button.opt{padding:16px;border:none;border-radius:14px;background:#1f2937;color:white;text-align:left;cursor:pointer;font-size:1rem;transition:.2s}
+button.opt:hover{transform:translateY(-2px)}
+.correct{background:var(--ok)!important}
+.wrong{background:var(--bad)!important}
+#feedback{margin-top:16px;color:var(--muted)}
+#next,#restart{margin-top:18px;padding:14px 22px;border:none;border-radius:12px;background:var(--accent);color:white;cursor:pointer}
+.badges{display:flex;gap:12px;flex-wrap:wrap}
+.badge{background:#1e293b;padding:10px 14px;border-radius:12px}
+.hidden{display:none}
+</style>
 </head>
 <body>
-
-<div class="quiz-wrap">
-  <div class="header">
-    <h1>CS Quiz</h1>
-    <p>Δοκίμασε τις γνώσεις σου στο Computer Science</p>
-  </div>
-
-  <div id="quiz-view">
-    <div class="progress-row">
-      <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
-      <span class="progress-text" id="prog-text">1 / 7</span>
-    </div>
-    <div class="question-card">
-      <div class="question-text" id="q-text"></div>
-    </div>
-    <div class="options" id="options"></div>
-    <div class="feedback" id="feedback"></div>
-    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Επόμενη ερώτηση</button>
-  </div>
-
-  <div id="score-view" style="display:none">
-    <div class="score-card">
-      <div class="score-big" id="score-big"></div>
-      <div class="score-label" id="score-label"></div>
-      <div class="score-stats">
-        <div class="score-stat">
-          <div class="score-stat-val" id="st-correct"></div>
-          <div class="score-stat-lbl">Σωστές</div>
-        </div>
-        <div class="score-stat">
-          <div class="score-stat-val" id="st-wrong"></div>
-          <div class="score-stat-lbl">Λάθος</div>
-        </div>
-        <div class="score-stat">
-          <div class="score-stat-val" id="st-pct"></div>
-          <div class="score-stat-lbl">Ποσοστό</div>
-        </div>
-      </div>
-      <button class="restart-btn" onclick="restart()">Παίξε ξανά</button>
-    </div>
-  </div>
+<div class="wrap">
+<div class="card">
+<div class="top">
+<div><h1>🚀 CS Quiz Pro</h1><div id="progressText"></div></div>
+<div class="badges">
+<div class="badge">🏆 Score: <span id="scoreLive">0</span></div>
+<div class="badge">⚡ Streak: <span id="streak">0</span></div>
 </div>
-
+</div>
+<div class="bar"><div id="fill" class="fill"></div></div>
+<div id="quiz">
+<div id="question" class="q"></div>
+<div id="options" class="grid"></div>
+<div id="feedback"></div>
+<button id="next" class="hidden">Next</button>
+</div>
+<div id="results" class="hidden">
+<h2>Quiz Complete!</h2>
+<h1 id="final"></h1>
+<p id="msg"></p>
+<button id="restart">Play Again</button>
+</div>
+</div>
+</div>
 <script>
-  const questions = [
-    {
-      question: "Ποια από αυτές τις γλώσσες τρέχει απευθείας στον browser;",
-      options: ["Java", "Python", "JavaScript", "C++"],
-      correct: 2,
-      explanation: "Η JavaScript είναι η μόνη γλώσσα που τρέχει natively στον browser."
-    },
-    {
-      question: "Τι κάνει η εντολή 'git commit'?",
-      options: ["Ανεβάζει κώδικα στο GitHub", "Αποθηκεύει αλλαγές στο τοπικό repo", "Κατεβάζει αλλαγές από το remote", "Δημιουργεί νέο branch"],
-      correct: 1,
-      explanation: "Το commit αποθηκεύει στιγμιότυπο των αλλαγών τοπικά. Το push τις ανεβάζει στο GitHub."
-    },
-    {
-      question: "Τι σημαίνει OOP;",
-      options: ["Open Operand Protocol", "Object-Oriented Programming", "Online Output Process", "Ordered Object Pattern"],
-      correct: 1,
-      explanation: "OOP = Object-Oriented Programming. Αντικειμενοστραφής προγραμματισμός — η βάση της Java."
-    },
-    {
-      question: "Τι κάνει το localStorage στον browser;",
-      options: ["Αποθηκεύει δεδομένα στον server", "Κρυπτογραφεί δεδομένα", "Αποθηκεύει δεδομένα τοπικά στον browser", "Φορτώνει αρχεία CSS"],
-      correct: 2,
-      explanation: "Το localStorage αποθηκεύει key-value δεδομένα στον browser του χρήστη. Παραμένουν ακόμα και αν κλείσεις το tab."
-    },
-    {
-      question: "Τι επιστρέφει η JavaScript εντολή: typeof 42;",
-      options: ['"integer"', '"number"', '"int"', '"float"'],
-      correct: 1,
-      explanation: "Στη JavaScript δεν υπάρχουν integers και floats — όλοι οι αριθμοί είναι τύπου 'number'."
-    },
-    {
-      question: "Ποιο CSS property χρησιμοποιείς για να κεντράρεις στοιχεία οριζόντια με flexbox;",
-      options: ["align-items", "justify-content", "text-align", "margin: auto"],
-      correct: 1,
-      explanation: "Με display:flex, το justify-content κεντράρει οριζόντια και το align-items κατακόρυφα."
-    },
-    {
-      question: "Ποια δομή δεδομένων λειτουργεί με αρχή LIFO (Last In First Out);",
-      options: ["Queue", "Array", "Stack", "LinkedList"],
-      correct: 2,
-      explanation: "Stack = στοίβα. Το τελευταίο που μπαίνει βγαίνει πρώτο — όπως μια στοίβα από πιάτα."
-    }
-  ];
-
-  let current = 0;
-  let score = 0;
-  let answered = false;
-
-  function render() {
-    const q = questions[current];
-    const pct = Math.round((current / questions.length) * 100);
-
-    document.getElementById('prog').style.width = pct + '%';
-    document.getElementById('prog-text').textContent = (current + 1) + ' / ' + questions.length;
-    document.getElementById('q-text').textContent = q.question;
-    document.getElementById('feedback').textContent = '';
-    document.getElementById('next-btn').style.display = 'none';
-    answered = false;
-
-    const opts = document.getElementById('options');
-    opts.innerHTML = '';
-
-    q.options.forEach((opt, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      btn.textContent = opt;
-      btn.onclick = () => answer(i);
-      opts.appendChild(btn);
-    });
-  }
-
-  function answer(idx) {
-    if (answered) return;
-    answered = true;
-
-    const q = questions[current];
-    const btns = document.querySelectorAll('.option-btn');
-
-    btns.forEach(b => b.disabled = true);
-
-    if (idx === q.correct) {
-      btns[idx].classList.add('correct');
-      document.getElementById('feedback').textContent = 'Σωστό! ' + q.explanation;
-      score++;
-    } else {
-      btns[idx].classList.add('wrong');
-      btns[q.correct].classList.add('correct');
-      document.getElementById('feedback').textContent = 'Λάθος. ' + q.explanation;
-    }
-
-    const nextBtn = document.getElementById('next-btn');
-    nextBtn.style.display = 'block';
-    nextBtn.textContent = current < questions.length - 1 ? 'Επόμενη ερώτηση' : 'Δες αποτέλεσμα';
-  }
-
-  function nextQuestion() {
-    current++;
-    if (current < questions.length) {
-      render();
-    } else {
-      showScore();
-    }
-  }
-
-  function showScore() {
-    document.getElementById('quiz-view').style.display = 'none';
-    document.getElementById('score-view').style.display = 'block';
-
-    const wrong = questions.length - score;
-    const pct = Math.round((score / questions.length) * 100);
-
-    document.getElementById('score-big').textContent = score + '/' + questions.length;
-    document.getElementById('score-label').textContent =
-      pct >= 80 ? 'Εξαιρετικό αποτέλεσμα!' :
-      pct >= 50 ? 'Καλή δουλειά, συνέχισε!' :
-      'Μελέτησε λίγο ακόμα!';
-    document.getElementById('st-correct').textContent = score;
-    document.getElementById('st-wrong').textContent = wrong;
-    document.getElementById('st-pct').textContent = pct + '%';
-  }
-
-  function restart() {
-    current = 0;
-    score = 0;
-    document.getElementById('quiz-view').style.display = 'block';
-    document.getElementById('score-view').style.display = 'none';
-    render();
-  }
-
-  render();
+const questions=[
+{q:"Which language runs natively in browsers?",o:["Java","Python","JavaScript","C++"],a:2,e:"JavaScript powers browser interactivity."},
+{q:"What does Git commit do?",o:["Upload","Save snapshot","Pull","Branch"],a:1,e:"It saves a local snapshot."},
+{q:"What is OOP?",o:["Protocol","Object-Oriented Programming","Process","Pattern"],a:1,e:"Programming with objects and classes."},
+{q:"localStorage is used to...",o:["Server storage","Encrypt","Store locally","Load CSS"],a:2,e:"Persistent browser storage."},
+{q:"typeof 42 returns?",o:["integer","number","int","float"],a:1,e:"All JS numbers are type number."}
+];
+let current=0,score=0,streak=0,answered=false;
+function render(){
+const q=questions[current];
+progressText.textContent=`Question ${current+1}/${questions.length}`;
+fill.style.width=((current/questions.length)*100)+"%";
+question.textContent=q.q;
+options.innerHTML='';feedback.textContent='';next.classList.add('hidden');answered=false;
+q.o.forEach((t,i)=>{
+const b=document.createElement('button');
+b.className='opt';b.textContent=t;
+b.onclick=()=>answer(i,b);
+options.appendChild(b);
+});
+}
+function answer(i,b){
+if(answered)return; answered=true;
+const q=questions[current];
+[...options.children].forEach(x=>x.disabled=true);
+if(i===q.a){score++;streak++;b.classList.add('correct');}
+else{streak=0;b.classList.add('wrong');options.children[q.a].classList.add('correct');}
+scoreLive.textContent=score; document.getElementById('streak').textContent=streak;
+feedback.textContent=q.e;
+next.classList.remove('hidden');
+}
+next.onclick=()=>{
+current++;
+if(current<questions.length) render();
+else finish();
+};
+function finish(){
+quiz.classList.add('hidden');results.classList.remove('hidden');
+const pct=Math.round(score/questions.length*100);
+final.textContent=`${score}/${questions.length} (${pct}%)`;
+msg.textContent=pct>=80?"Excellent!":pct>=60?"Good job!":"Keep practicing!";
+fill.style.width='100%';
+}
+restart.onclick=()=>location.reload();
+render();
 </script>
-
 </body>
 </html>
